@@ -939,7 +939,9 @@ button:focus-visible {
   border-radius: var(--radius-lg);
   overflow: hidden;
   backdrop-filter: blur(8px);
-  transition: all var(--transition-smooth);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
 }

@@ -286,7 +286,6 @@
     filtered.forEach((project, i) => {
       const card = document.createElement("div");
       card.className = "project-card reveal";
-      card.style.transitionDelay = `${i * 0.1}s`;
 
       const statusClass = (project.status || "Completed")
         .toLowerCase()
@@ -329,6 +328,10 @@
     requestAnimationFrame(() => {
       grid.querySelectorAll(".reveal").forEach((el) => {
         el.classList.add("revealed");
+        // Clear transition delay once revealed so hover transitions are instantaneous & uniform
+        setTimeout(() => {
+          el.style.transitionDelay = "";
+        }, 600);
       });
     });
 
