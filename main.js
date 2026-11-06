@@ -105,7 +105,7 @@
     window.addEventListener("scroll", updateActive, { passive: true });
     updateActive();
 
-    // Smooth click handler with instant active update
+    // Smooth click handler with precise top-nav offset
     navLinks.forEach((link) => {
       link.addEventListener("click", (e) => {
         const targetId = link.getAttribute("href");
@@ -114,9 +114,52 @@
           e.preventDefault();
           navLinks.forEach((l) => l.classList.remove("active"));
           link.classList.add("active");
-          target.scrollIntoView({ behavior: "smooth" });
+
+          if (targetId === "#hero") {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          } else {
+            const navOffset = 90;
+            const targetTop =
+              target.getBoundingClientRect().top + window.pageYOffset - navOffset;
+            window.scrollTo({
+              top: Math.max(0, targetTop),
+              behavior: "smooth",
+            });
+          }
         }
       });
+    });
+
+    // Smart auto-hide on scroll down, reveal on scroll up
+    let lastScrollY = window.scrollY;
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        const currentScrollY = window.scrollY;
+        const delta = currentScrollY - lastScrollY;
+
+        // When near the top, always show
+        if (currentScrollY < 120) {
+          pillNav.classList.remove("nav-hidden");
+        } else if (delta > 8) {
+          // Scrolling down - hide so reading content is never obstructed
+          pillNav.classList.add("nav-hidden");
+        } else if (delta < -8) {
+          // Scrolling up - show immediately
+          pillNav.classList.remove("nav-hidden");
+        }
+
+        lastScrollY = currentScrollY;
+      },
+      { passive: true }
+    );
+
+    // Show navbar whenever mouse hovers near the top edge
+    window.addEventListener("mousemove", (e) => {
+      if (e.clientY < 70) {
+        pillNav.classList.remove("nav-hidden");
+      }
     });
 
     // Desktop Magnetic Micro-Interaction
@@ -475,7 +518,13 @@
         const target = document.querySelector(targetId);
         if (target) {
           e.preventDefault();
-          target.scrollIntoView({ behavior: "smooth" });
+          const navOffset = 90;
+          const targetTop =
+            target.getBoundingClientRect().top + window.pageYOffset - navOffset;
+          window.scrollTo({
+            top: Math.max(0, targetTop),
+            behavior: "smooth",
+          });
         }
       });
     });
